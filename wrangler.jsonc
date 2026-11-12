@@ -1,0 +1,13 @@
+{
+  "name": "dispensa-familiare",
+  "main": "build/worker.mjs",
+  "compatibility_date": "2026-11-12",
+  "workers_dev": true,
+  "build": { "command": "node scripts/build.mjs" },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 0.1,
+    "logs": { "enabled": true, "invocation_logs": true },
+    "traces": { "enabled": true, "head_sampling_rate": 0.1 }
+  }
+}

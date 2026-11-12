@@ -1,0 +1,5 @@
+import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+const files={};
+for(const [name,type] of [['index.html','text/html; charset=utf-8'],['app.js','application/javascript; charset=utf-8'],['style.css','text/css; charset=utf-8']])files['/'+name]={body:readFileSync(new URL('../dist/'+name,import.meta.url),'utf8'),type};
+mkdirSync(new URL('../build/',import.meta.url),{recursive:true});
+writeFileSync(new URL('../build/worker.mjs',import.meta.url),`const files = ${JSON.stringify(files)};\nexport default { async fetch(request) {\n if(!['GET','HEAD'].includes(request.method)) return new Response('Method not allowed',{status:405,headers:{Allow:'GET, HEAD'}});\n const path = new URL(request.url).pathname;\n const file = files[path === '/' ? '/index.html' : path];\n if(!file) return new Response('Not found',{status:404});\n return new Response(request.method === 'HEAD' ? null : file.body,{headers:{'Content-Type':file.type,'Cache-Control':'no-cache','X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','Permissions-Policy':'microphone=(self)'}});\n}};\n`);
